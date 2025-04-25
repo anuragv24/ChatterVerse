@@ -13,10 +13,8 @@ function App() {
       <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
         <Route element={<PrivateRotues/>}>
           <Route path="/" element={<Room />} />
-
         </Route>
       </Routes>
       </AuthProvider>
