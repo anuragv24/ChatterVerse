@@ -4,7 +4,7 @@ import { useAuth } from "../utils/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, handleUserLogin } = useAuth();
   const [credentials, setCredentials] = useState({
     email:'',
     password:'',
@@ -20,7 +20,7 @@ const LoginPage = () => {
     let value = e.target.value
 
     setCredentials({...credentials, [name]:value})
-    console.log("cred:", credentials)
+    // console.log("cred:", credentials)
   }
 
 
@@ -28,7 +28,7 @@ const LoginPage = () => {
   return (
     <div className="auth--container">
       <div className="form--wrapper">
-        <form action="">
+        <form onSubmit={(e) => {handleUserLogin(e, credentials)}}>
           <div className="field--wrapper">
             <label htmlFor="">Email:</label>
             <input
@@ -37,7 +37,7 @@ const LoginPage = () => {
               name="email"
               placeholder="Enter your email"
               value={credentials.email}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e)}
             />
           </div>
           <div className="field--wrapper">
@@ -48,11 +48,11 @@ const LoginPage = () => {
               name="password"
               placeholder="Enter password..."
               value={credentials.password}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e)}
             />
           </div>
           <div className="field--wrapper">
-            <input className="btn btn--lg btn--main " type="submit" value="Login/" />
+            <input className="btn btn--lg btn--main " type="submit" value="Login" />
           </div>
         </form>
       </div>
