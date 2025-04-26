@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { account } from "../appwriteConfig";
 import { useNavigate } from "react-router";
+import { ID } from "appwrite";
 
 const AuthContext = createContext();
 
@@ -11,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUserOnLoad()
+    getUserOnLoad();
   }, []);
 
   const getUserOnLoad = async () => {
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const handleUserLogin = async (e, credentials) => {
@@ -48,17 +49,45 @@ export const AuthProvider = ({ children }) => {
 
   const handleUserLogout = async () => {
     try {
-       await account.deleteSession('current')
-        setUser(null)
+      await account.deleteSession("current");
+      setUser(null);
     } catch (error) {
-        console.error(error)
+      console.error(error);
     }
-  }
+  };
+
+  const handleUserRegister = async (e, credentials) => {
+    e.preventDefault();
+
+    if (credentials.password1 !== credentials.password2) {
+      alert("Password do not match!");
+      return;
+    }
+    try {
+      let response = await account.create(
+        ID.unique(),
+        credentials.email,
+        credentials.password1,
+        credentials.name
+      );
+
+      await account.createEmailPasswordSession(credentials.email, credentials.password1)
+      const accountDetail = await account.get()
+      setUser(accountDetail)
+
+      navigate('/')
+
+      console.log("Registerd", response)
+    } catch (error) {
+      console.log("Registeration failed:", error);
+    }
+  };
 
   const contextData = {
     user,
     handleUserLogin,
     handleUserLogout,
+    handleUserRegister,
   };
 
   return (
